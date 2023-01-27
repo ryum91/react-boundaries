@@ -1,11 +1,32 @@
 import { ReactElement, ReactNode, Suspense, useEffect } from 'react';
-import {
-  ErrorBoundary as ReactErrorBoundary,
-  useErrorHandler as useErrorHandlerOrigin,
-} from 'react-error-boundary';
+import { ErrorBoundary as ReactErrorBoundary } from 'react-error-boundary';
 
-import { ErrorHandler } from './type';
-export { ErrorFallbackComponentProps, ErrorHandler } from './type';
+export { useErrorHandler } from 'react-error-boundary';
+
+/**
+ * Fallback 컴포넌트 제작시 사용할 수 있는 Props
+ */
+export interface ErrorFallbackComponentProps {
+  /** {@link Boundary}에서 전달되어 넘어온 customEvents */
+  customEvents?: Record<string, () => void>;
+  /** Fulfilled 컴포넌트 */
+  children: ReactNode;
+  /** 발생한 에러 */
+  error: Error;
+  /** ErrorBoundary Reset */
+  reset: () => void;
+}
+
+/**
+ * Boundary에서 사용되는 ErrorHandler 인터페이스<br/>
+ * 해당 인터페이스를 구현해서 ErrorBoundary Fallback 컴포넌트를 제작하세요.
+ */
+export interface ErrorHandler {
+  /** ErrorHandler가 동작했을 때 렌더링되는 Fallback 컴포넌트 */
+  fallback: (props: ErrorFallbackComponentProps) => ReactElement;
+  /** ErrorHandler가 동작하는 조건 */
+  condition: (error: Error) => boolean;
+}
 
 const FallbackParent = ({
   reset,
@@ -98,33 +119,20 @@ export function Boundary(props: BoundaryProps) {
     return <Suspense fallback={pendingFallback!}>{children}</Suspense>;
   }
 
-  if (!pendingFallback) {
-    return (
-      <ErrorBoundary
-        rejectedHandler={rejectedHandler}
-        customEvents={customEvents}
-        onReset={onReset}
-      >
-        {children}
-      </ErrorBoundary>
-    );
-  }
-
   return (
     <ErrorBoundary
       rejectedHandler={rejectedHandler}
       customEvents={customEvents}
       onReset={onReset}
     >
-      <Suspense fallback={pendingFallback}>{children}</Suspense>
+      {!!pendingFallback ? (
+        <Suspense fallback={pendingFallback}>{children}</Suspense>
+      ) : (
+        children
+      )}
     </ErrorBoundary>
   );
 }
-
-/**
- * ErrorBoundary 를 사용하지 않는 곳에서 ErrorBoundary 로 에러를 전달하는 함수를 반환합니다.
- */
-export const useErrorHandler = useErrorHandlerOrigin;
 
 export type WithBoundaryProps = Omit<BoundaryProps, 'children'>;
 
