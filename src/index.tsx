@@ -3,6 +3,8 @@ import { ErrorBoundary as ReactErrorBoundary } from 'react-error-boundary';
 
 export { useErrorHandler } from 'react-error-boundary';
 
+const isBrowser = () => typeof window !== 'undefined';
+
 /**
  * Fallback 컴포넌트 제작시 사용할 수 있는 Props
  */
@@ -36,9 +38,13 @@ const FallbackParent = ({
   children: ReactElement;
 }) => {
   useEffect(() => {
-    window.addEventListener('popstate', reset);
+    if (isBrowser()) {
+      window.addEventListener('popstate', reset);
+    }
     return () => {
-      window.removeEventListener('popstate', reset);
+      if (isBrowser()) {
+        window.removeEventListener('popstate', reset);
+      }
     };
   }, [reset]);
   return <>{children}</>;
@@ -116,7 +122,7 @@ export function Boundary(props: BoundaryProps) {
   }
 
   if (!rejectedHandler) {
-    return <Suspense fallback={pendingFallback!}>{children}</Suspense>;
+    return <Suspense fallback={pendingFallback}>{children}</Suspense>;
   }
 
   return (
@@ -125,7 +131,7 @@ export function Boundary(props: BoundaryProps) {
       customEvents={customEvents}
       onReset={onReset}
     >
-      {!!pendingFallback ? (
+      {pendingFallback ? (
         <Suspense fallback={pendingFallback}>{children}</Suspense>
       ) : (
         children
