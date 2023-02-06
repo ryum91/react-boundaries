@@ -1,6 +1,17 @@
 {
   "name": "react-boundaries",
-  "version": "0.0.6",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ryum91/react-boundaries.git"
+  },
+  "keywords": [
+    "react",
+    "suspense",
+    "ErrorBoundary"
+  ],
+  "homepage": "https://github.com/ryum91/react-boundaries",
+  "readme": "https://github.com/ryum91/react-boundaries/blob/main/README.md",
   "files": [
     "dist"
   ],
@@ -24,6 +35,7 @@
     "@rollup/plugin-typescript": "^11.0.0",
     "@types/node": "^18.11.18",
     "@types/react": "^18.0.27",
+    "@vitejs/plugin-react": "^3.1.0",
     "tslib": "^2.5.0",
     "typescript": "^4.9.4",
     "vite": "^4.0.4"
