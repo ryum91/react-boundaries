@@ -149,14 +149,14 @@ export type WithBoundaryProps = Omit<BoundaryProps, 'children'>;
  * @param containerProps
  * @returns
  */
-export function withBoundary(
-  WrappedComponent: React.FC,
+export function withBoundary<P>(
+  WrappedComponent: React.FC<P>,
   containerProps?: WithBoundaryProps
 ) {
-  const Container = (props: any) => {
+  const Container = (props: P) => {
     return (
       <Boundary {...containerProps}>
-        <WrappedComponent {...props} />
+        <WrappedComponent {...(props as JSX.IntrinsicAttributes & P)} />
       </Boundary>
     );
   };

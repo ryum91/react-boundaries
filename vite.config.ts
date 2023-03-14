@@ -1,6 +1,6 @@
 import path from 'path';
 import { defineConfig } from 'vite';
-import react from "@vitejs/plugin-react";
+import react from '@vitejs/plugin-react';
 import typescript from '@rollup/plugin-typescript';
 
 module.exports = defineConfig({
@@ -13,10 +13,10 @@ module.exports = defineConfig({
     rollupOptions: {
       external: ['react', 'react-dom'],
       output: {
-        "globals": {
-          "react": "react",
-          "react-dom": "react-dom"
-        }
+        globals: {
+          react: 'react',
+          'react-dom': 'react-dom',
+        },
       },
       plugins: [react(), typescript({ tsconfig: './tsconfig.json' })],
     },
